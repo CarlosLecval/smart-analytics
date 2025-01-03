@@ -9,10 +9,13 @@ export default {
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        'smart-green': '#005245',
+        'light-green': '#D5E7DA',
+        'lighter-green': '#587873'
       },
     },
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/forms'),
+  ],
 } satisfies Config;
