@@ -15,7 +15,7 @@ function arrayRange(
 export function ScaleQuestion({ optionsLength, option }: { optionsLength: number, option: string }) {
   return (
     <label className="flex items-center pb-1">
-      <select name="scale" className="py-1 rounded border-gray-500 border-2 focus:ring-0 focus:border-lighter-green">
+      <select name="scale" className="py-1 rounded border-gray-300 border-2 focus:ring-0 focus:border-gray-400">
         {arrayRange(1, optionsLength, 1, false).map(value => (
           <option key={`${option}-${value}`} value={Number(value)}>
             {value}

@@ -4,13 +4,18 @@ import Link from "next/link";
 import { OptionQuestion } from "@/app/(header)/dpi/components/option";
 import { SelectionQuestion } from "@/app/(header)/dpi/components/selection";
 import { ScaleQuestion } from "@/app/(header)/dpi/components/scale";
+import { auth } from "@/auth";
+import { redirect } from "next/navigation";
 
-export default function DpiTest() {
+export default async function DpiTest() {
   const options = [
     { label: "Email", value: "email" },
     { label: "Phone", value: "phone" },
     { label: "Mail", value: "mail" }
   ]
+
+  const session = await auth()
+
   return (
     <div className="flex items-center justify-center w-full">
       <div className="flex flex-col w-4/6 gap-3 h-3/5">
