@@ -1,4 +1,10 @@
 const { PrismaClient } = require('@prisma/client')
+const { dpiSections } = require('./seedData/sections')
+const { dpiLectureQuestions } = require('./seedData/lectureQuestions')
+const { dpiLearningQuestions } = require('./seedData/learningQuestions')
+const { dpiPersonalityQuestions } = require('./seedData/personalityQuestions')
+const { dpiAutoevalQuestions } = require('./seedData/autoevalQuestions')
+const { dpiValuesQuestions } = require('./seedData/valuesQuestions')
 
 const prisma = new PrismaClient()
 
@@ -50,7 +56,137 @@ async function main() {
       { name: "Dirección de Negocios Gastronómicos" },
     ]
   })
-  await Promise.all([semesters, degrees]);
+  const questionPromises = []
+  const dpiTest = await prisma.test.create({
+    data: {
+      name: "DPI",
+      TestSection: {
+        create: dpiSections
+      }
+    }
+  })
+  let section = await prisma.testSection.findFirst({
+    where: {
+      testId: dpiTest.id,
+      title: "Comprensión en la lectura",
+    }
+  })
+  dpiLectureQuestions.forEach((question) => {
+    questionPromises.push(
+      prisma.question.create({
+        data: {
+          text: question.question,
+          type: "OPTION",
+          testSectionId: section.id,
+          Option: {
+            createMany: {
+              data: question.options.map(option => ({ text: option }))
+            }
+          }
+        }
+      })
+    )
+  })
+  section = await prisma.testSection.findFirst({
+    where: {
+      testId: dpiTest.id,
+      title: "Estilos de aprendizaje",
+    }
+  })
+  dpiLearningQuestions.forEach((question) => {
+    questionPromises.push(
+      prisma.question.create({
+        data: {
+          text: question.question,
+          type: "OPTION",
+          testSectionId: section.id,
+          Option: {
+            createMany: {
+              data: ['De acuerdo', 'En desacuerdo'].map(option => ({ text: option }))
+            }
+          }
+        }
+      })
+    )
+  })
+  section = await prisma.testSection.findFirst({
+    where: {
+      testId: dpiTest.id,
+      title: "Personalidad caracterológico"
+    }
+  })
+  dpiPersonalityQuestions.forEach((question) => {
+    questionPromises.push(
+      prisma.question.create({
+        data: {
+          text: question.question,
+          type: "OPTION",
+          testSectionId: section.id,
+          Option: {
+            createMany: {
+              data: question.options.map(option => ({ text: option }))
+            }
+          }
+        }
+      })
+    )
+  })
+  section = await prisma.testSection.findFirst({
+    where: {
+      testId: dpiTest.id,
+      title: "Autoevaluación"
+    }
+  })
+  dpiAutoevalQuestions.forEach((question) => {
+    if (question.type != "TEXT")
+      questionPromises.push(
+        prisma.question.create({
+          data: {
+            text: question.question,
+            type: question.type,
+            testSectionId: section.id,
+            Option: {
+              createMany: {
+                data: question.options.map(option => ({ text: option }))
+              }
+            }
+          }
+        })
+      )
+    questionPromises.push(
+      prisma.question.create({
+        data: {
+          text: question.question,
+          type: question.type,
+          testSectionId: section.id,
+        }
+      })
+    )
+  })
+  section = await prisma.testSection.findFirst({
+    where: {
+      testId: dpiTest.id,
+      title: "Prueba de valores personales"
+    }
+  })
+  dpiValuesQuestions.forEach((question) => {
+    questionPromises.push(
+      prisma.question.create({
+        data: {
+          text: question.question,
+          type: "SCALE",
+          testSectionId: section.id,
+          Option: {
+            create: question.options.map(option => ({ text: option }))
+          }
+        }
+      })
+    )
+  })
+  await Promise.all([
+    semesters,
+    degrees,
+  ].concat(questionPromises))
 }
 main()
   .then(async () => {
