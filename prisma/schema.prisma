@@ -38,10 +38,11 @@ model User {
   accounts      Account[]
   sessions      Session[]
 
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
   degreeId   Int?
   semesterId Int?
+  UserTest   UserTakenTest[]
 }
 
 model Account {
@@ -81,4 +82,66 @@ model VerificationToken {
   expires    DateTime
 
   @@id([identifier, token])
+}
+
+model Test {
+  id          String          @id @default(cuid())
+  name        String
+  TestSection TestSection[]
+  UserTest    UserTakenTest[]
+}
+
+model TestSection {
+  id           Int        @id @default(autoincrement())
+  title        String
+  instructions String
+  test         Test       @relation(fields: [testId], references: [id])
+  testId       String
+  Question     Question[]
+}
+
+enum QuestionType {
+  SCALE
+  OPTION
+  SELECTION
+  TEXT
+}
+
+model Question {
+  id            Int          @id @default(autoincrement())
+  text          String
+  type          QuestionType
+  section       TestSection  @relation(fields: [testSectionId], references: [id])
+  testSectionId Int
+  Option        Option[]
+  UserAnswer    UserAnswer[]
+}
+
+model Option {
+  id         Int      @id @default(autoincrement())
+  text       String
+  question   Question @relation(fields: [questionId], references: [id])
+  questionId Int
+}
+
+model UserTakenTest {
+  id             Int          @id @default(autoincrement())
+  startedAt      DateTime
+  endedAt        DateTime
+  lectureBeganAt DateTime
+  user           User         @relation(fields: [userId], references: [id])
+  test           Test         @relation(fields: [testId], references: [id])
+  userId         String
+  testId         String
+  UserAnswer     UserAnswer[]
+}
+
+model UserAnswer {
+  answer          String
+  test            UserTakenTest @relation(fields: [userTakenTestId], references: [id])
+  question        Question      @relation(fields: [questionId], references: [id])
+  userTakenTestId Int
+  questionId      Int
+
+  @@id([userTakenTestId, questionId])
 }
