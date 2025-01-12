@@ -126,9 +126,9 @@ model Option {
 
 model UserTakenTest {
   id             Int          @id @default(autoincrement())
-  startedAt      DateTime
-  endedAt        DateTime
-  lectureBeganAt DateTime
+  startedAt      DateTime?
+  endedAt        DateTime?
+  readingBeganAt DateTime     @default(now())
   user           User         @relation(fields: [userId], references: [id])
   test           Test         @relation(fields: [testId], references: [id])
   userId         String

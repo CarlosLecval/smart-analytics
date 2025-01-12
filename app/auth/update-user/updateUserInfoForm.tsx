@@ -4,7 +4,7 @@ import { useActionState, useEffect } from "react"
 import MainButton from "@/app/ui/components/mainButton"
 import { updateUserInfo } from "@/app/lib/actions"
 import { z } from "zod"
-import { userSchema } from "@/app/lib/data"
+import { userSchema } from "@/app/lib/schemas"
 import toast from "react-hot-toast"
 
 interface option {

@@ -1,20 +1,16 @@
-import MainButton from "@/app/ui/components/mainButton";
 import { auth } from "@/auth";
-import Link from "next/link";
+import { getUserTakenTest } from "@/app/lib/data";
+import HomeCard from "./homeCard";
+import Loader from "@/app/ui/components/loader";
 
 export default async function Home() {
-  const session = await auth()
+  const session = await auth();
+  if (!session?.user) return <>Unauthorized</>
+  const userTakenTest = await getUserTakenTest(session.user.email as string);
 
   return (
     <div className="flex items-center justify-center w-full">
-      <div className="max-w-screen-sm min-h-40 bg-gray-50 p-4 rounded-xl">
-        <p className="text-xl">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut</p>
-        <div className="flex justify-center pt-5">
-          <Link href="/dpi">
-            <MainButton text="Iniciar prueba" />
-          </Link>
-        </div>
-      </div>
+      <HomeCard test={userTakenTest} email={session.user.email as string} />
     </div>
   )
 }

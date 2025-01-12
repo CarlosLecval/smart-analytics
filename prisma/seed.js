@@ -1,6 +1,6 @@
 const { PrismaClient } = require('@prisma/client')
 const { dpiSections } = require('./seedData/sections')
-const { dpiLectureQuestions } = require('./seedData/lectureQuestions')
+const { dpiReadingQuestions } = require('./seedData/readingQuestions')
 const { dpiLearningQuestions } = require('./seedData/learningQuestions')
 const { dpiPersonalityQuestions } = require('./seedData/personalityQuestions')
 const { dpiAutoevalQuestions } = require('./seedData/autoevalQuestions')
@@ -71,7 +71,7 @@ async function main() {
       title: "Comprensión en la lectura",
     }
   })
-  dpiLectureQuestions.forEach((question) => {
+  dpiReadingQuestions.forEach((question) => {
     questionPromises.push(
       prisma.question.create({
         data: {

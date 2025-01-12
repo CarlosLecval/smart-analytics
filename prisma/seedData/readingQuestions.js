@@ -1,4 +1,4 @@
-const dpiLectureQuestions = [
+const dpiReadingQuestions = [
   {
     question: "La comunicación en el estilo de dirección chino es:",
     options: [
@@ -105,4 +105,4 @@ const dpiLectureQuestions = [
   },
 ];
 
-exports.dpiLectureQuestions = dpiLectureQuestions;
+exports.dpiReadingQuestions = dpiReadingQuestions;

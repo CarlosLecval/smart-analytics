@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "UserTakenTest" ALTER COLUMN "startedAt" DROP NOT NULL,
+ALTER COLUMN "endedAt" DROP NOT NULL;

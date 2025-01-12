@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "UserTakenTest" ALTER COLUMN "readingBeganAt" SET DEFAULT CURRENT_TIMESTAMP;
