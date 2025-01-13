@@ -1,7 +1,6 @@
 import { auth } from "@/auth";
 import { getUserTakenTest } from "@/app/lib/data";
 import HomeCard from "./homeCard";
-import Loader from "@/app/ui/components/loader";
 
 export default async function Home() {
   const session = await auth();

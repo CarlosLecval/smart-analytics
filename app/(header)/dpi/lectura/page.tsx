@@ -1,6 +1,16 @@
-import MainButton from "@/app/ui/components/mainButton";
+import { getUserTakenTest } from "@/app/lib/data";
+import { auth } from "@/auth";
+import { redirect } from "next/navigation";
+import FinishReadingButton from "./finishReadingButton";
 
-export default function Reading() {
+export default async function Reading() {
+  const session = await auth();
+  if (!session?.user) return <>Unauthorized</>
+
+  const userTakenTest = await getUserTakenTest(session.user.email as string);
+  if (userTakenTest === null || userTakenTest.endedAt !== null) return redirect("/home")
+  if (userTakenTest.startedAt !== null) return redirect("/dpi")
+
   return (
     <div className="flex flex-col items-center w-full">
       <div className="max-w-6xl flex flex-col items-center">
@@ -596,11 +606,7 @@ export default function Reading() {
               y organizacional.
             </p>
           </section>
-          <div className="w-full flex justify-center">
-            <button className="pt-5 pb-4">
-              <MainButton text="Terminar lectura" />
-            </button>
-          </div>
+          <FinishReadingButton testId={userTakenTest.id} />
         </div>
       </div>
     </div >

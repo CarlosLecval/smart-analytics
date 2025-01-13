@@ -6,6 +6,7 @@ import { updateUserInfo } from "@/app/lib/actions"
 import { z } from "zod"
 import { userSchema } from "@/app/lib/schemas"
 import toast from "react-hot-toast"
+import Loader from "@/app/ui/components/loader"
 
 interface option {
   value: any,
@@ -52,7 +53,7 @@ export default function UpdateUserInfoForm({ email, sex, degrees, semesters, sel
     if (state.message != null) toast.error(state.message)
   }, [state])
 
-  if (isPending) return <p>Cargando...</p>
+  if (isPending) return <Loader />
 
   return (
     <form action={formAction} className="flex flex-col gap-4 w-[30%] min-h-40 bg-gray-50 p-4 rounded-xl">
