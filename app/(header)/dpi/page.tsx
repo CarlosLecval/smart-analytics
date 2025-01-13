@@ -6,15 +6,15 @@ import { SelectionQuestion } from "@/app/(header)/dpi/components/selection";
 import { ScaleQuestion } from "@/app/(header)/dpi/components/scale";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
+import { getUserTakenTest } from "@/app/lib/data";
 
 export default async function DpiTest() {
-  const options = [
-    { label: "Email", value: "email" },
-    { label: "Phone", value: "phone" },
-    { label: "Mail", value: "mail" }
-  ]
-
   const session = await auth()
+  if (!session?.user) return <>Unauthorized</>
+
+  const userTakenTest = await getUserTakenTest(session.user.email as string);
+  if (userTakenTest === null || userTakenTest.endedAt !== null) return redirect("/home")
+  if (userTakenTest.startedAt === null) return redirect("/dpi/lectura")
 
   return (
     <div className="flex items-center justify-center w-full">
@@ -27,9 +27,10 @@ export default async function DpiTest() {
         <form className="pl-3 grow">
           <h3 className="font-semibold text-2xl pb-2">Lorem ipsum dolor sit amet</h3>
           <div className="flex flex-col text-xl pl-4 gap-1">
-            {options.map(option => (
-              <ScaleQuestion key={option.value} optionsLength={options.length} option={option.label} />
-            ))}
+            Options
+            {/* {options.map(option => ( */}
+            {/*   <ScaleQuestion key={option.value} optionsLength={options.length} option={option.label} /> */}
+            {/* ))} */}
           </div>
         </form>
         <div className="flex justify-between items-center">

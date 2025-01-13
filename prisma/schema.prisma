@@ -95,9 +95,12 @@ model TestSection {
   id           Int        @id @default(autoincrement())
   title        String
   instructions String
+  order        Decimal
   test         Test       @relation(fields: [testId], references: [id])
   testId       String
   Question     Question[]
+
+  @@unique([testId, order])
 }
 
 enum QuestionType {
@@ -110,11 +113,14 @@ enum QuestionType {
 model Question {
   id            Int          @id @default(autoincrement())
   text          String
+  order         Decimal
   type          QuestionType
   section       TestSection  @relation(fields: [testSectionId], references: [id])
   testSectionId Int
   Option        Option[]
   UserAnswer    UserAnswer[]
+
+  @@unique([testSectionId, order])
 }
 
 model Option {

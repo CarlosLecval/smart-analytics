@@ -61,7 +61,10 @@ async function main() {
     data: {
       name: "DPI",
       TestSection: {
-        create: dpiSections
+        create: dpiSections.map((section, ind) => ({
+          ...section,
+          order: ind + 1
+        }))
       }
     }
   })
@@ -71,6 +74,7 @@ async function main() {
       title: "Comprensión en la lectura",
     }
   })
+  let order = 1;
   dpiReadingQuestions.forEach((question) => {
     questionPromises.push(
       prisma.question.create({
@@ -78,6 +82,7 @@ async function main() {
           text: question.question,
           type: "OPTION",
           testSectionId: section.id,
+          order: order++,
           Option: {
             createMany: {
               data: question.options.map(option => ({ text: option }))
@@ -99,6 +104,7 @@ async function main() {
         data: {
           text: question.question,
           type: "OPTION",
+          order: order++,
           testSectionId: section.id,
           Option: {
             createMany: {
@@ -122,6 +128,7 @@ async function main() {
           text: question.question,
           type: "OPTION",
           testSectionId: section.id,
+          order: order++,
           Option: {
             createMany: {
               data: question.options.map(option => ({ text: option }))
@@ -144,6 +151,7 @@ async function main() {
           data: {
             text: question.question,
             type: question.type,
+            order: order++,
             testSectionId: section.id,
             Option: {
               createMany: {
@@ -153,15 +161,17 @@ async function main() {
           }
         })
       )
-    questionPromises.push(
-      prisma.question.create({
-        data: {
-          text: question.question,
-          type: question.type,
-          testSectionId: section.id,
-        }
-      })
-    )
+    else
+      questionPromises.push(
+        prisma.question.create({
+          data: {
+            text: question.question,
+            type: question.type,
+            order: order++,
+            testSectionId: section.id,
+          }
+        })
+      )
   })
   section = await prisma.testSection.findFirst({
     where: {
@@ -175,6 +185,7 @@ async function main() {
         data: {
           text: question.question,
           type: "SCALE",
+          order: order++,
           testSectionId: section.id,
           Option: {
             create: question.options.map(option => ({ text: option }))
