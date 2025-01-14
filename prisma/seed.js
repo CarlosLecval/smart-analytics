@@ -83,6 +83,7 @@ async function main() {
           type: "OPTION",
           testSectionId: section.id,
           order: order++,
+          testId: dpiTest.id,
           Option: {
             createMany: {
               data: question.options.map(option => ({ text: option }))
@@ -105,6 +106,7 @@ async function main() {
           text: question.question,
           type: "OPTION",
           order: order++,
+          testId: dpiTest.id,
           testSectionId: section.id,
           Option: {
             createMany: {
@@ -129,6 +131,7 @@ async function main() {
           type: "OPTION",
           testSectionId: section.id,
           order: order++,
+          testId: dpiTest.id,
           Option: {
             createMany: {
               data: question.options.map(option => ({ text: option }))
@@ -152,6 +155,7 @@ async function main() {
             text: question.question,
             type: question.type,
             order: order++,
+            testId: dpiTest.id,
             testSectionId: section.id,
             Option: {
               createMany: {
@@ -168,6 +172,7 @@ async function main() {
             text: question.question,
             type: question.type,
             order: order++,
+            testId: dpiTest.id,
             testSectionId: section.id,
           }
         })
@@ -187,6 +192,7 @@ async function main() {
           type: "SCALE",
           order: order++,
           testSectionId: section.id,
+          testId: dpiTest.id,
           Option: {
             create: question.options.map(option => ({ text: option }))
           }

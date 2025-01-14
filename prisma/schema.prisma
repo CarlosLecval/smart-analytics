@@ -89,6 +89,7 @@ model Test {
   name        String
   TestSection TestSection[]
   UserTest    UserTakenTest[]
+  Question    Question[]
 }
 
 model TestSection {
@@ -116,11 +117,13 @@ model Question {
   order         Decimal
   type          QuestionType
   section       TestSection  @relation(fields: [testSectionId], references: [id])
+  test          Test         @relation(fields: [testId], references: [id])
   testSectionId Int
   Option        Option[]
   UserAnswer    UserAnswer[]
+  testId        String
 
-  @@unique([testSectionId, order])
+  @@unique([testId, order])
 }
 
 model Option {
