@@ -1,14 +1,26 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import { getUserTakenTest } from "@/app/lib/data";
-import Question from "./components/question";
 import { prisma } from "@/prisma";
-import { Prisma } from "@prisma/client";
 import Link from "next/link";
 import Image from "next/image";
 import MainButton from "@/app/ui/components/mainButton";
+import { OptionQuestion } from "../components/option";
 
-export default async function DpiTest() {
+async function nextQuestion(questionOrder: string) {
+  "use server"
+  const nextQuestion = await prisma.question.findFirst({
+    where: {
+      order: {
+        gt: questionOrder
+      }
+    }
+  })
+  if (nextQuestion === null) redirect("/home")
+  redirect(`/dpi/${nextQuestion.id}`)
+}
+
+export default async function DpiServerComp({ params }: { params: Promise<{ questionId: string }> }) {
   const session = await auth()
   if (!session?.user) return <>Unauthorized</>
 
@@ -16,35 +28,35 @@ export default async function DpiTest() {
   if (userTakenTest === null || userTakenTest.endedAt !== null) return redirect("/home")
   if (userTakenTest.startedAt === null) return redirect("/dpi/lectura")
 
-  const lastAnsweredQuestion = await prisma.userAnswer.findFirst({
+  const questionId = (await params).questionId
+  const question = await prisma.question.findUnique({
     where: {
-      userTakenTestId: userTakenTest.id
+      id: Number(questionId)
     },
     include: {
-      question: true
-    },
-    orderBy: {
-      question: {
-        order: 'desc'
-      }
+      section: true,
+      options: true
     }
   })
+
+  if (question === null) return <>Question not found</>
+
+  const nextQuestionWithOrder = nextQuestion.bind(null, question.order.toString())
 
   return (
     <div className="flex items-center justify-center w-full">
       <div className="flex flex-col w-4/6 gap-3 h-3/5">
         <div className="rounded-full w-full min-h-8 bg-smart-green" />
         <div className="bg-light-green py-2 px-3 rounded-md">
-          <h2 className="font-bold text-smart-green text-lg">Lorem ipsum</h2>
-          <p className="font-normal text-smart-green text-base">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut </p>
+          <h2 className="font-bold text-smart-green text-lg">{question.section.title}</h2>
+          <p className="font-normal text-smart-green text-base">{question.section.instructions}</p>
         </div>
         <form className="pl-3 grow">
-          <h3 className="font-semibold text-2xl pb-2">Lorem ipsum dolor sit amet</h3>
+          <h3 className="font-semibold text-2xl pb-2">{question.text}</h3>
           <div className="flex flex-col text-xl pl-4 gap-1">
-            Options
-            {/* {options.map(option => ( */}
-            {/*   <ScaleQuestion key={option.value} optionsLength={options.length} option={option.label} /> */}
-            {/* ))} */}
+            {question.options.map(option => (
+              <OptionQuestion key={option.id} label={option.text} value={option.id.toString()} />
+            ))}
           </div>
         </form>
         <div className="flex justify-between items-center">
@@ -54,14 +66,13 @@ export default async function DpiTest() {
               <p className="text-lg text-lighter-green">Pregunta anterior</p>
             </span>
           </Link>
-          <button>
-            <MainButton text="Siguiente" />
-          </button>
+          <form action={nextQuestionWithOrder}>
+            <button type="submit">
+              <MainButton text="Siguiente" />
+            </button>
+          </form>
         </div>
       </div>
-      {/* <Question */}
-      {/*   currentQuestion={lastAnsweredQuestion === null ? new Prisma.Decimal(0).toString() : lastAnsweredQuestion.question.order.plus(1).toString()} */}
-      {/* /> */}
     </div>
   )
 }

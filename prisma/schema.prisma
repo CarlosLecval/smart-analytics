@@ -87,9 +87,9 @@ model VerificationToken {
 model Test {
   id          String          @id @default(cuid())
   name        String
-  TestSection TestSection[]
-  UserTest    UserTakenTest[]
-  Question    Question[]
+  testSection TestSection[]
+  userTest    UserTakenTest[]
+  question    Question[]
 }
 
 model TestSection {
@@ -99,7 +99,7 @@ model TestSection {
   order        Decimal
   test         Test       @relation(fields: [testId], references: [id])
   testId       String
-  Question     Question[]
+  questions    Question[]
 
   @@unique([testId, order])
 }
@@ -119,8 +119,8 @@ model Question {
   section       TestSection  @relation(fields: [testSectionId], references: [id])
   test          Test         @relation(fields: [testId], references: [id])
   testSectionId Int
-  Option        Option[]
-  UserAnswer    UserAnswer[]
+  options       Option[]
+  userAnswer    UserAnswer[]
   testId        String
 
   @@unique([testId, order])
@@ -142,7 +142,7 @@ model UserTakenTest {
   test           Test         @relation(fields: [testId], references: [id])
   userId         String
   testId         String
-  UserAnswer     UserAnswer[]
+  userAnswers    UserAnswer[]
 }
 
 model UserAnswer {

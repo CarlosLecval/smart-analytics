@@ -84,7 +84,7 @@ async function main() {
           testSectionId: section.id,
           order: order++,
           testId: dpiTest.id,
-          Option: {
+          options: {
             createMany: {
               data: question.options.map(option => ({ text: option }))
             }
@@ -108,7 +108,7 @@ async function main() {
           order: order++,
           testId: dpiTest.id,
           testSectionId: section.id,
-          Option: {
+          options: {
             createMany: {
               data: ['De acuerdo', 'En desacuerdo'].map(option => ({ text: option }))
             }
@@ -132,7 +132,7 @@ async function main() {
           testSectionId: section.id,
           order: order++,
           testId: dpiTest.id,
-          Option: {
+          options: {
             createMany: {
               data: question.options.map(option => ({ text: option }))
             }
@@ -157,7 +157,7 @@ async function main() {
             order: order++,
             testId: dpiTest.id,
             testSectionId: section.id,
-            Option: {
+            options: {
               createMany: {
                 data: question.options.map(option => ({ text: option }))
               }
@@ -193,7 +193,7 @@ async function main() {
           order: order++,
           testSectionId: section.id,
           testId: dpiTest.id,
-          Option: {
+          options: {
             create: question.options.map(option => ({ text: option }))
           }
         }
