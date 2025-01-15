@@ -5,6 +5,7 @@ import { prisma } from "@/prisma";
 import { userSchema } from "./schemas";
 import { signIn } from "@/auth";
 import { getUserTakenTest } from "@/app/lib/data";
+import { Option, Question, TestSection } from "@prisma/client";
 
 export async function updateUserInfo(email: string, prevState: { message: string | null }, formData: FormData): Promise<typeof prevState> {
   const FormSchema = userSchema.pick({ sex: true, semester: true, degree: true })
@@ -25,12 +26,13 @@ export async function updateUserInfo(email: string, prevState: { message: string
     })
   }
   catch (e) {
+    console.log(e)
     return { message: "No se pudo actualizar la información del usuario" }
   }
   redirect("/home")
 }
 
-export async function startTest(email: string, prevState: { message?: string | null, testId?: number }): Promise<typeof prevState> {
+export async function startTest(email: string, _prevState: { message?: string | null, testId?: number }): Promise<typeof _prevState> {
   const userTakenTest = await getUserTakenTest(email);
   if (userTakenTest !== null) return { message: "Ya has iniciado la prueba" };
   const test = await prisma.test.findFirst()
@@ -54,7 +56,7 @@ export async function startTest(email: string, prevState: { message?: string | n
   }
 }
 
-export async function finishReading(testId: number, prevState: { message: string | null }): Promise<typeof prevState> {
+export async function finishReading(testId: number, _prevState: { message: string | null }): Promise<typeof _prevState> {
   const userTakenTest = await prisma.userTakenTest.findUnique({
     where: {
       id: testId
@@ -72,6 +74,50 @@ export async function finishReading(testId: number, prevState: { message: string
     }
   })
   redirect("/dpi")
+}
+
+export async function getNextQuestion(
+  questionOrder: number,
+  _prevState: { fetchedQuestion: Question & { options: Option[], section: TestSection } | null }
+): Promise<typeof _prevState> {
+  const next = await prisma.question.findFirst({
+    where: {
+      order: {
+        gt: questionOrder
+      }
+    },
+    include: {
+      section: true,
+      options: true
+    },
+    orderBy: {
+      order: 'asc'
+    }
+  })
+  if (next === null) redirect("/home")
+  return { fetchedQuestion: next }
+}
+
+export async function getLastQuestion(
+  questionOrder: number,
+  _prevState: { fetchedQuestion: Question & { options: Option[], section: TestSection } | null }
+): Promise<typeof _prevState> {
+  const last = await prisma.question.findFirst({
+    where: {
+      order: {
+        lt: questionOrder
+      }
+    },
+    include: {
+      section: true,
+      options: true
+    },
+    orderBy: {
+      order: 'desc'
+    }
+  })
+  if (last === null) redirect("/home")
+  return { fetchedQuestion: last }
 }
 
 export async function signInAction(redirectUrl: string | null) {

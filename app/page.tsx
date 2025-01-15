@@ -1,5 +1,6 @@
 import { sourceSerif } from "./ui/fonts";
 import SignInWithGoogle from "./ui/components/signInWithGoogle";
+import { Suspense } from "react";
 
 export default function Root() {
   return (
@@ -10,7 +11,10 @@ export default function Root() {
       <div className="flex grow">
         <div className="flex flex-col gap-3 justify-center w-1/3 bg-gray-50 px-6 rounded-lg">
           <p className="text-2xl">¡Realiza tu Diagnóstico de Perfil Individual!</p>
-          <SignInWithGoogle />
+          {/* //TODO: Add fallback */}
+          <Suspense>
+            <SignInWithGoogle />
+          </Suspense>
         </div>
         <div className="w-2/3 flex items-center justify-center">
           <div className="w-[580] h-[330] bg-gray-500 rounded-lg" />

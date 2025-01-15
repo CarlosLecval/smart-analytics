@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { sourceSerif } from "../ui/fonts";
 import { SignOutButton } from "../ui/components/signOutButton";
 

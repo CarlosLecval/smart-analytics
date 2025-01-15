@@ -6,7 +6,7 @@ function arrayRange(
 ) {
   const arr = Array.from(
     { length: (stop - start) / step + 1 },
-    (_value: any, index: number) => (start + index * step).toString()
+    (_value: unknown, index: number) => (start + index * step).toString()
   );
   if (append) arr.push("Otro");
   return arr;

@@ -1,32 +1,76 @@
-import { auth } from "@/auth";
+// import { auth } from "@/auth";
 import { redirect } from "next/navigation";
-import { getUserTakenTest } from "@/app/lib/data";
+// import { getUserTakenTest } from "@/app/lib/data";
 import { prisma } from "@/prisma";
-import Link from "next/link";
 import Image from "next/image";
 import MainButton from "@/app/ui/components/mainButton";
 import { OptionQuestion } from "../components/option";
 
-async function nextQuestion(questionOrder: string) {
+async function nextQuestion(questionOrder: number) {
   "use server"
-  const nextQuestion = await prisma.question.findFirst({
+  const next = await prisma.question.findFirst({
     where: {
       order: {
         gt: questionOrder
       }
+    },
+    select: {
+      id: true
+    },
+    orderBy: {
+      order: 'asc'
     }
   })
-  if (nextQuestion === null) redirect("/home")
-  redirect(`/dpi/${nextQuestion.id}`)
+  if (next === null) redirect("/home")
+  redirect(`/dpi/${next.id}`)
+}
+
+async function lastQuestion(questionOrder: number) {
+  "use server"
+  const last = await prisma.question.findFirst({
+    where: {
+      order: {
+        lt: questionOrder
+      }
+    },
+    select: {
+      id: true
+    },
+    orderBy: {
+      order: 'desc'
+    }
+  })
+  if (last === null) redirect("/home")
+  redirect(`/dpi/${last.id}`)
+}
+
+export async function generateStaticParams() {
+  const test = await prisma.test.findFirst({
+    select: {
+      id: true
+    }
+  })
+  if (test === null) return [];
+  const questions = await prisma.question.findMany({
+    where: {
+      testId: test.id
+    },
+    select: {
+      id: true
+    }
+  })
+  return questions.map(question => ({
+    questionId: question.id.toString()
+  }))
 }
 
 export default async function DpiServerComp({ params }: { params: Promise<{ questionId: string }> }) {
-  const session = await auth()
-  if (!session?.user) return <>Unauthorized</>
-
-  const userTakenTest = await getUserTakenTest(session.user.email as string);
-  if (userTakenTest === null || userTakenTest.endedAt !== null) return redirect("/home")
-  if (userTakenTest.startedAt === null) return redirect("/dpi/lectura")
+  // const session = await auth()
+  // if (!session?.user) return <>Unauthorized</>
+  //
+  // const userTakenTest = await getUserTakenTest(session.user.email as string);
+  // if (userTakenTest === null || userTakenTest.endedAt !== null) return redirect("/home")
+  // if (userTakenTest.startedAt === null) return redirect("/dpi/lectura")
 
   const questionId = (await params).questionId
   const question = await prisma.question.findUnique({
@@ -41,7 +85,8 @@ export default async function DpiServerComp({ params }: { params: Promise<{ ques
 
   if (question === null) return <>Question not found</>
 
-  const nextQuestionWithOrder = nextQuestion.bind(null, question.order.toString())
+  const nextQuestionWithOrder = nextQuestion.bind(null, question.order)
+  const lastQuestionWithOrder = lastQuestion.bind(null, question.order)
 
   return (
     <div className="flex items-center justify-center w-full">
@@ -60,12 +105,12 @@ export default async function DpiServerComp({ params }: { params: Promise<{ ques
           </div>
         </form>
         <div className="flex justify-between items-center">
-          <Link href="/">
-            <span className="flex">
+          <form action={lastQuestionWithOrder}>
+            <button type="submit" className="flex items-center">
               <Image src="/arrow-left.svg" alt="Arrow icon" width={20} height={18} />
               <p className="text-lg text-lighter-green">Pregunta anterior</p>
-            </span>
-          </Link>
+            </button>
+          </form>
           <form action={nextQuestionWithOrder}>
             <button type="submit">
               <MainButton text="Siguiente" />

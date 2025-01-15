@@ -9,19 +9,23 @@ import toast from "react-hot-toast"
 import Loader from "@/app/ui/components/loader"
 
 interface option {
-  value: any,
+  value: string | number,
   label: string
 }
 
 function ComboBox({ label, options, selectedOption }: {
   label: string,
   options: option[],
-  selectedOption: any
+  selectedOption: option['value'] | null
 }) {
   return (
     <label className="flex flex-col">
       <span className="pl-2 text-2xl font-light text-gray-500">{label}</span>
-      <select defaultValue={selectedOption} name={label} className="rounded-lg border-gray-300 border-2 focus:ring-0 focus:border-gray-400">
+      <select
+        defaultValue={selectedOption === null ? undefined : selectedOption}
+        name={label}
+        className="rounded-lg border-gray-300 border-2 focus:ring-0 focus:border-gray-400"
+      >
         {
           options.map(option => (
             <option key={option.value} value={option.value}>
