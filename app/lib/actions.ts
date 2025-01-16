@@ -122,6 +122,45 @@ export async function finishReading(testId: number, _prevState: { message: strin
   redirect(`/dpi/${next.id}`)
 }
 
+export async function redirectToNextQuestion(questionOrder: number) {
+  const next = await prisma.question.findFirst({
+    where: {
+      order: {
+        gt: questionOrder
+      }
+    },
+    select: {
+      id: true
+    },
+    orderBy: {
+      order: 'asc'
+    }
+  })
+  if (next === null) return redirect("/home")
+  redirect(`/dpi/${next.id}`)
+}
+
+export async function redirectToLastQuestion(
+  questionOrder: number,
+  _prevState: { message: string | null }
+): Promise<typeof _prevState> {
+  const last = await prisma.question.findFirst({
+    where: {
+      order: {
+        lt: questionOrder
+      }
+    },
+    select: {
+      id: true
+    },
+    orderBy: {
+      order: 'desc'
+    }
+  })
+  if (last === null) return { message: "No hay preguntas anteriores" }
+  redirect(`/dpi/${last.id}`)
+}
+
 export async function signInAction(redirectUrl: string | null) {
   await signIn("google", { redirectTo: redirectUrl == null ? "/home" : redirectUrl })
 }
