@@ -1,8 +1,8 @@
 import { auth } from "@/auth";
-import { getUserTakenTest } from "@/app/lib/data";
+// import { getUserTakenTest } from "@/app/lib/data";
 import { prisma } from "@/prisma";
 import QuestionForm from "./components/questionForm";
-import { redirect } from "next/navigation";
+// import { redirect } from "next/navigation";
 
 export async function generateStaticParams() {
   const test = await prisma.test.findFirst({
@@ -48,12 +48,7 @@ export default async function DpiServerComp({ params }: { params: Promise<{ ques
   return (
     <div className="flex items-center justify-center w-full">
       <div className="flex flex-col w-4/6 gap-3 h-3/5">
-        <div className="rounded-full w-full min-h-8 bg-smart-green" />
-        <div className="bg-light-green py-2 px-3 rounded-md">
-          <h2 className="font-bold text-smart-green text-lg">{question.section.title}</h2>
-          <p className="font-normal text-smart-green text-base">{question.section.instructions}</p>
-        </div>
-        <QuestionForm questionText={question.text} questionOrder={question.order} options={question.options} />
+        <QuestionForm question={question} />
       </div>
     </div>
   )
