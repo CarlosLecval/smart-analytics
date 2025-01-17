@@ -1,7 +1,6 @@
 'use client'
 
 import { continueTest } from "@/app/lib/actions"
-import Loader from "@/app/ui/components/loader"
 import MainButton from "@/app/ui/components/mainButton"
 import { useActionState, useEffect } from "react"
 import toast from "react-hot-toast"
@@ -19,12 +18,10 @@ export default function ContinueTestButton({ testId, email }: { testId: string, 
     localStorage.setItem('testId', testId)
   }, [testId])
 
-  if (isPending) return <Loader />
-
   return (
     <form action={formAction}>
       <button type="submit">
-        <MainButton text="Continuar prueba" />
+        <MainButton text="Continuar prueba" isLoading={isPending} />
       </button>
     </form>
   )

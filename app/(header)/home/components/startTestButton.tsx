@@ -5,7 +5,6 @@ import { startTest } from "@/app/lib/actions";
 import { redirect } from "next/navigation";
 import { useActionState, useEffect } from "react";
 import toast from "react-hot-toast";
-import Loader from "@/app/ui/components/loader";
 
 export default function StartTestButton({ email }: { email: string }) {
   const startTestWithEmail = startTest.bind(null, email);
@@ -19,11 +18,10 @@ export default function StartTestButton({ email }: { email: string }) {
     }
   }, [state])
 
-  if (isPending) return <Loader />
   return (
     <form action={formAction}>
       <button type="submit">
-        <MainButton text="Iniciar prueba" />
+        <MainButton text="Iniciar prueba" isLoading={isPending} />
       </button>
     </form>
   )
