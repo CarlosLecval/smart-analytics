@@ -25,8 +25,8 @@ export async function generateStaticParams() {
 }
 
 export default async function DpiServerComp({ params }: { params: Promise<{ questionId: string }> }) {
-  const session = await auth()
-  if (!session?.user) return <>Unauthorized</>
+  // const session = await auth()
+  // if (!session?.user) return <>Unauthorized</>
 
   // const userTakenTest = await getUserTakenTest(session.user.email as string);
   // if (userTakenTest === null || userTakenTest.endedAt !== null) return redirect("/home")
