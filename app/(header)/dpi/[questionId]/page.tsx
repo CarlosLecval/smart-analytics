@@ -28,9 +28,9 @@ export default async function DpiServerComp({ params }: { params: Promise<{ ques
   const session = await auth()
   if (!session?.user) return <>Unauthorized</>
 
-  const userTakenTest = await getUserTakenTest(session.user.email as string);
-  if (userTakenTest === null || userTakenTest.endedAt !== null) return redirect("/home")
-  if (userTakenTest.startedAt === null) return redirect("/dpi/lectura")
+  // const userTakenTest = await getUserTakenTest(session.user.email as string);
+  // if (userTakenTest === null || userTakenTest.endedAt !== null) return redirect("/home")
+  // if (userTakenTest.startedAt === null) return redirect("/dpi/lectura")
 
   const questionId = (await params).questionId
   const question = await prisma.question.findUnique({
