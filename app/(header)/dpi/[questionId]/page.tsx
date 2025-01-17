@@ -33,6 +33,20 @@ export default async function DpiServerComp({ params }: { params: Promise<{ ques
   // if (userTakenTest.startedAt === null) return redirect("/dpi/lectura")
 
   const questionId = (await params).questionId
+  const lastQuestionOrder = await prisma.question.findFirst({
+    where: {
+      test: {
+        name: "DPI"
+      }
+    },
+    select: {
+      order: true
+    },
+    orderBy: {
+      order: "desc"
+    }
+  })
+
   const question = await prisma.question.findUnique({
     where: {
       id: Number(questionId)
@@ -43,12 +57,21 @@ export default async function DpiServerComp({ params }: { params: Promise<{ ques
     }
   })
 
-  if (question === null) return <>Question not found</>
+  if (question === null || lastQuestionOrder === null) return <>Question not found</>
+
+  const questionPercentage = (question.order / lastQuestionOrder.order) * 100
 
   return (
     <div className="flex items-center justify-center w-full">
       <div className="flex flex-col w-4/6 gap-3 h-3/5">
-        <QuestionForm question={question} />
+        <div className="rounded-full w-full min-h-8 bg-gray-200">
+          <div className="bg-smart-green h-full rounded-full" style={{ width: `${questionPercentage}%` }} />
+        </div>
+        <div className="bg-light-green py-2 px-3 rounded-md">
+          <h2 className="font-bold text-smart-green text-lg">{question.section.title}</h2>
+          <p className="font-normal text-smart-green text-base">{question.section.instructions}</p>
+        </div>
+        <QuestionForm question={question} lastQuestionOrder={lastQuestionOrder.order} />
       </div>
     </div>
   )

@@ -21,7 +21,10 @@ function LastQuestionLoader() {
 }
 
 export default function QuestionForm(
-  { question }: { question: Question & { options: Option[], section: TestSection } }
+  { question, lastQuestionOrder }: {
+    question: Question & { options: Option[], section: TestSection },
+    lastQuestionOrder: number
+  }
 ) {
   const nextQuestionWithOrder = redirectToNextQuestion.bind(null, question.order)
   const lastQuestionWithOrder = redirectToLastQuestion.bind(null, question.order)
@@ -33,34 +36,27 @@ export default function QuestionForm(
   }, [state])
 
   return (
-    <>
-      <div className="rounded-full w-full min-h-8 bg-smart-green" />
-      <div className="bg-light-green py-2 px-3 rounded-md">
-        <h2 className="font-bold text-smart-green text-lg">{question.section.title}</h2>
-        <p className="font-normal text-smart-green text-base">{question.section.instructions}</p>
+    <form className="flex flex-col grow" action={nextQuestionAction}>
+      <div className="pl-3 grow">
+        <h3 className="font-semibold text-2xl pb-2">{question.text}</h3>
+        <div className="flex flex-col text-xl pl-4 gap-1">
+          {question.options.map(option => (
+            <OptionQuestion key={option.id} label={option.text} value={option.id.toString()} />
+          ))}
+        </div>
       </div>
-      <form className="flex flex-col grow" action={nextQuestionAction}>
-        <div className="pl-3 grow">
-          <h3 className="font-semibold text-2xl pb-2">{question.text}</h3>
-          <div className="flex flex-col text-xl pl-4 gap-1">
-            {question.options.map(option => (
-              <OptionQuestion key={option.id} label={option.text} value={option.id.toString()} />
-            ))}
-          </div>
-        </div>
-        <div className="flex justify-between items-center">
-          <button formAction={lastQuestionAction} className="flex items-center" disabled={isPendingLast}>
-            {isPendingLast ?
-              (<span className="pr-1"><LastQuestionLoader /></span>)
-              : (<Image src="/arrow-left.svg" alt="Arrow icon" width={20} height={18} />)
-            }
-            <p className="text-lg text-lighter-green">Pregunta anterior</p>
-          </button>
-          <button type="submit">
-            <MainButton text="Siguiente" isLoading={isPendingNext} />
-          </button>
-        </div>
-      </form >
-    </>
+      <div className="flex justify-between items-center">
+        <button formAction={lastQuestionAction} className="flex items-center" disabled={isPendingLast}>
+          {isPendingLast ?
+            (<span className="pr-1"><LastQuestionLoader /></span>)
+            : (<Image src="/arrow-left.svg" alt="Arrow icon" width={20} height={18} />)
+          }
+          <p className="text-lg text-lighter-green">Pregunta anterior</p>
+        </button>
+        <button type="submit">
+          <MainButton text="Siguiente" isLoading={isPendingNext} />
+        </button>
+      </div>
+    </form >
   )
 }
