@@ -1,8 +1,5 @@
-import { auth } from "@/auth";
-// import { getUserTakenTest } from "@/app/lib/data";
 import { prisma } from "@/prisma";
 import QuestionForm from "./components/questionForm";
-// import { redirect } from "next/navigation";
 
 export async function generateStaticParams() {
   const test = await prisma.test.findFirst({
@@ -25,13 +22,6 @@ export async function generateStaticParams() {
 }
 
 export default async function DpiServerComp({ params }: { params: Promise<{ questionId: string }> }) {
-  // const session = await auth()
-  // if (!session?.user) return <>Unauthorized</>
-
-  // const userTakenTest = await getUserTakenTest(session.user.email as string);
-  // if (userTakenTest === null || userTakenTest.endedAt !== null) return redirect("/home")
-  // if (userTakenTest.startedAt === null) return redirect("/dpi/lectura")
-
   const questionId = (await params).questionId
   const lastQuestionOrder = await prisma.question.findFirst({
     where: {

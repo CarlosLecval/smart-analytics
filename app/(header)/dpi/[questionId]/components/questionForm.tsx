@@ -7,6 +7,7 @@ import { OptionQuestion } from "./option";
 import { redirectToLastQuestion, redirectToNextQuestion } from "@/app/lib/actions";
 import { useActionState, useEffect } from "react";
 import toast from "react-hot-toast";
+import useSWR, { Fetcher } from "swr";
 
 function LastQuestionLoader() {
   return (
@@ -20,6 +21,8 @@ function LastQuestionLoader() {
   )
 }
 
+const fetcher: Fetcher<{ canAccess: boolean }, string> = (url: string) => fetch(url).then(res => res.json())
+
 export default function QuestionForm(
   { question, lastQuestionOrder }: {
     question: Question & { options: Option[], section: TestSection },
@@ -31,10 +34,17 @@ export default function QuestionForm(
   const lastQuestionWithOrder = redirectToLastQuestion.bind(null, question.order)
   const [_, nextQuestionAction, isPendingNext] = useActionState(nextQuestionWithOrder, null)
   const [state, lastQuestionAction, isPendingLast] = useActionState(lastQuestionWithOrder, { message: null })
+  const { data, error, isLoading } = useSWR('/api/user/test', fetcher)
 
   useEffect(() => {
     if (state.message !== null) toast.error(state.message)
   }, [state])
+
+  useEffect(() => {
+    console.log(data)
+    if (data?.canAccess === true) toast.success(data.canAccess)
+  }, [data])
+
 
   return (
     <>
