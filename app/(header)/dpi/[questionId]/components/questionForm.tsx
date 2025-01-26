@@ -1,15 +1,18 @@
 'use client'
 
 import MainButton from "@/app/ui/components/mainButton";
-import { Option, Question, TestSection } from "@prisma/client";
+import { Option, Question, QuestionType, TestSection } from "@prisma/client";
 import Image from "next/image";
-import { OptionQuestion } from "./option";
+import { OptionQuestion } from "./optionQuestion";
 import { redirectToLastQuestion, redirectToNextQuestion } from "@/app/lib/actions";
 import { useActionState, useEffect } from "react";
 import toast from "react-hot-toast";
 import useSWR, { Fetcher } from "swr";
 import { redirect } from "next/navigation";
 import QuestionLoading from "../loading";
+import { ScaleQuestion } from "./scaleQuestion";
+import { SelectionQuestion } from "./selectionQuestion";
+import TextQuestion from "./textQuestion";
 
 function LastQuestionLoader() {
   return (
@@ -21,6 +24,24 @@ function LastQuestionLoader() {
       <span className="sr-only">Loading...</span>
     </div>
   )
+}
+
+function RenderOptions({ questionType, options }: { questionType: QuestionType, options: Option[] }) {
+  if (questionType === 'OPTION')
+    return options.map(option => (
+      <OptionQuestion key={option.id} label={option.text} value={option.id.toString()} />
+    ))
+  if (questionType === 'SCALE')
+    return options.map(option => (
+      <ScaleQuestion key={option.id} optionsLength={options.length} option={option.text} />
+    ))
+  if (questionType === 'SELECTION')
+    return options.map(option => (
+      <SelectionQuestion key={option.id} label={option.text} value={option.id.toString()} />
+    ))
+  if (questionType === 'TEXT')
+    return <TextQuestion />
+  return <>Error</>
 }
 
 type validationResponse = {
@@ -82,9 +103,7 @@ export default function QuestionForm(
         <div className="pl-3 grow">
           <h3 className="font-semibold text-2xl pb-2">{question.text}</h3>
           <div className="flex flex-col text-xl pl-4 gap-1">
-            {question.options.map(option => (
-              <OptionQuestion key={option.id} label={option.text} value={option.id.toString()} />
-            ))}
+            <RenderOptions questionType={question.type} options={question.options} />
           </div>
         </div>
         <div className="flex justify-between items-center">

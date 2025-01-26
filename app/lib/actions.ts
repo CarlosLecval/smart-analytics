@@ -122,7 +122,9 @@ export async function finishReading(testId: number, _prevState: { message: strin
   redirect(`/dpi/${next.id}`)
 }
 
-export async function redirectToNextQuestion(questionOrder: number, _prevState: null): Promise<typeof _prevState> {
+export async function redirectToNextQuestion(questionOrder: number, _prevState: null, formData: FormData): Promise<typeof _prevState> {
+  console.log(formData);
+  // const saveResponse
   const next = await prisma.question.findFirst({
     where: {
       order: {
