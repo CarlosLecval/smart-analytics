@@ -50,10 +50,8 @@ export default async function DpiServerComp({ params }: { params: Promise<{ ques
   if (question === null || lastQuestionOrder === null) return <>Question not found</>
 
   return (
-    <div className="flex items-center justify-center w-full">
-      <div className="flex flex-col w-4/6 gap-3 h-3/5">
-        <QuestionForm question={question} lastQuestionOrder={lastQuestionOrder.order} />
-      </div>
+    <div className="flex flex-col w-4/6 gap-3 h-3/5">
+      <QuestionForm question={question} lastQuestionOrder={lastQuestionOrder.order} />
     </div>
   )
 }
