@@ -7,6 +7,9 @@ import { OptionQuestion } from "./option";
 import { redirectToLastQuestion, redirectToNextQuestion } from "@/app/lib/actions";
 import { useActionState, useEffect } from "react";
 import toast from "react-hot-toast";
+import useSWR, { Fetcher } from "swr";
+import { redirect } from "next/navigation";
+import QuestionLoading from "../loading";
 
 function LastQuestionLoader() {
   return (
@@ -20,6 +23,25 @@ function LastQuestionLoader() {
   )
 }
 
+type validationResponse = {
+  canAccess: boolean
+} | {
+  redirect: string
+}
+
+const fetcher: Fetcher<validationResponse, string> = async (url: string) => {
+  try {
+    const response = await fetch(url)
+    if (response.ok) return response.json()
+    else if (response.status === 403) return response.json()
+    else throw new Error('Ocurrió un error')
+  }
+  catch (error) {
+    console.log(error)
+    throw new Error('Ocurrió un error')
+  }
+}
+
 export default function QuestionForm(
   { question, lastQuestionOrder }: {
     question: Question & { options: Option[], section: TestSection },
@@ -31,10 +53,21 @@ export default function QuestionForm(
   const lastQuestionWithOrder = redirectToLastQuestion.bind(null, question.order)
   const [_, nextQuestionAction, isPendingNext] = useActionState(nextQuestionWithOrder, null)
   const [state, lastQuestionAction, isPendingLast] = useActionState(lastQuestionWithOrder, { message: null })
+  const { data, error, isLoading } = useSWR('/api/user/test', fetcher)
 
   useEffect(() => {
     if (state.message !== null) toast.error(state.message)
   }, [state])
+
+  useEffect(() => {
+    if (error) toast.error('Ocurrió un error')
+  }, [error])
+
+  useEffect(() => {
+    if (data && "redirect" in data) redirect(data.redirect)
+  }, [data])
+
+  if (isLoading) return <QuestionLoading includeContainer={false} />
 
   return (
     <>
