@@ -37,6 +37,7 @@ const fetcher: Fetcher<validationResponse, string> = async (url: string) => {
     else throw new Error('Ocurrió un error')
   }
   catch (error) {
+    console.log(error)
     throw new Error('Ocurrió un error')
   }
 }
