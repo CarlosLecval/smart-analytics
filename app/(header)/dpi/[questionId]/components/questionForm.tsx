@@ -32,9 +32,7 @@ function RenderOptions({ questionType, options }: { questionType: QuestionType, 
       <OptionQuestion key={option.id} label={option.text} value={option.id.toString()} />
     ))
   if (questionType === 'SCALE')
-    return options.map(option => (
-      <ScaleQuestion key={option.id} optionsLength={options.length} option={option.text} />
-    ))
+    return <ScaleQuestion options={options} />
   if (questionType === 'SELECTION')
     return options.map(option => (
       <SelectionQuestion key={option.id} label={option.text} value={option.id.toString()} />
