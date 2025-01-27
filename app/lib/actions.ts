@@ -5,7 +5,7 @@ import { prisma } from "@/prisma";
 import { userSchema } from "./schemas";
 import { signIn } from "@/auth";
 import { getUserTakenTest } from "@/app/lib/data";
-import { Option, Prisma, Question, QuestionType, TestSection } from "@prisma/client";
+import { Prisma, QuestionType } from "@prisma/client";
 
 export async function updateUserInfo(email: string, prevState: { message: string | null }, formData: FormData): Promise<typeof prevState> {
   const FormSchema = userSchema.pick({ sex: true, semester: true, degree: true })
