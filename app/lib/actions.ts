@@ -5,6 +5,7 @@ import { prisma } from "@/prisma";
 import { userSchema } from "./schemas";
 import { signIn } from "@/auth";
 import { getUserTakenTest } from "@/app/lib/data";
+import { Option, Prisma, Question, QuestionType, TestSection } from "@prisma/client";
 
 export async function updateUserInfo(email: string, prevState: { message: string | null }, formData: FormData): Promise<typeof prevState> {
   const FormSchema = userSchema.pick({ sex: true, semester: true, degree: true })
@@ -122,11 +123,57 @@ export async function finishReading(testId: number, _prevState: { message: strin
   redirect(`/dpi/${next.id}`)
 }
 
-export async function redirectToNextQuestion(questionOrder: number, _prevState: null): Promise<typeof _prevState> {
-  const next = await prisma.question.findFirst({
+export async function redirectToNextQuestion(
+  question: { order: number, id: number, type: QuestionType },
+  _prevState: { message: string | null },
+  formData: FormData
+): Promise<typeof _prevState> {
+  const formAnswer = formData.getAll('question')
+  const userTakenTestId = formData.get("userTakenTest")
+  if (userTakenTestId === null) return { message: "Ocurrió un error" }
+  if (formAnswer.length === 0) return { message: "No olvides responder la pregunta" }
+  let answer;
+  if (question.type === 'TEXT') {
+    answer = {
+      text: formAnswer[0]
+    }
+  }
+  else if (question.type === 'SCALE') {
+    answer = {
+      list: (formAnswer[0] as string).split(',')
+    }
+  }
+  else if (question.type === 'OPTION') {
+    answer = {
+      answer: formAnswer[0]
+    }
+  }
+  else {
+    answer = {
+      selection: formAnswer
+    }
+  }
+  answer = answer as Prisma.JsonObject
+  const upsertAnswer = prisma.userAnswer.upsert({
+    where: {
+      userTakenTestId_questionId: {
+        userTakenTestId: Number(userTakenTestId),
+        questionId: question.id
+      }
+    },
+    update: {
+      answer: answer
+    },
+    create: {
+      userTakenTestId: Number(userTakenTestId),
+      questionId: question.id,
+      answer: answer
+    }
+  })
+  const getNext = prisma.question.findFirst({
     where: {
       order: {
-        gt: questionOrder
+        gt: question.order
       }
     },
     select: {
@@ -136,8 +183,35 @@ export async function redirectToNextQuestion(questionOrder: number, _prevState: 
       order: 'asc'
     }
   })
-  if (next === null) return redirect("/home")
-  redirect(`/dpi/${next.id}`)
+  const [_, next] = await Promise.all([upsertAnswer, getNext])
+  if (next !== null) {
+    return redirect(`/dpi/${next.id}`)
+  }
+  const getTotalQuestions = prisma.question.count({
+    where: {
+      test: {
+        name: "DPI"
+      }
+    }
+  })
+  const getAnsweredQuestions = prisma.userAnswer.count({
+    where: {
+      userTakenTestId: Number(userTakenTestId)
+    }
+  })
+  const [totalQuestions, answeredQuestions] = await Promise.all([getTotalQuestions, getAnsweredQuestions])
+  if (totalQuestions !== answeredQuestions) {
+    return { message: "No has contestado todas las preguntas" }
+  }
+  await prisma.userTakenTest.update({
+    where: {
+      id: Number(userTakenTestId)
+    },
+    data: {
+      endedAt: new Date()
+    }
+  })
+  redirect("/home")
 }
 
 export async function redirectToLastQuestion(

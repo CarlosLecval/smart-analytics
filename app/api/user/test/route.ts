@@ -9,5 +9,5 @@ export async function GET(
   const userTakenTest = await getUserTakenTest(session.user.email as string);
   if (userTakenTest === null || userTakenTest.endedAt !== null) return Response.json({ redirect: "/home" }, { status: 403 })
   if (userTakenTest.startedAt === null) return Response.json({ redirect: "/dpi/lectura" }, { status: 403 })
-  return Response.json({ canAccess: true })
+  return Response.json({ userTakenTest: userTakenTest.id })
 }

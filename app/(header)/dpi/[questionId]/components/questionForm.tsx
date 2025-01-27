@@ -1,15 +1,18 @@
 'use client'
 
 import MainButton from "@/app/ui/components/mainButton";
-import { Option, Question, TestSection } from "@prisma/client";
+import { Option, Question, QuestionType, TestSection } from "@prisma/client";
 import Image from "next/image";
-import { OptionQuestion } from "./option";
+import { OptionQuestion } from "./optionQuestion";
 import { redirectToLastQuestion, redirectToNextQuestion } from "@/app/lib/actions";
 import { useActionState, useEffect } from "react";
 import toast from "react-hot-toast";
 import useSWR, { Fetcher } from "swr";
 import { redirect } from "next/navigation";
 import QuestionLoading from "../loading";
+import { ScaleQuestion } from "./scaleQuestion";
+import { SelectionQuestion } from "./selectionQuestion";
+import TextQuestion from "./textQuestion";
 
 function LastQuestionLoader() {
   return (
@@ -23,8 +26,24 @@ function LastQuestionLoader() {
   )
 }
 
+function RenderOptions({ questionType, options }: { questionType: QuestionType, options: Option[] }) {
+  if (questionType === 'OPTION')
+    return options.map(option => (
+      <OptionQuestion key={option.id} label={option.text} value={option.id.toString()} />
+    ))
+  if (questionType === 'SCALE')
+    return <ScaleQuestion options={options} />
+  if (questionType === 'SELECTION')
+    return options.map(option => (
+      <SelectionQuestion key={option.id} label={option.text} value={option.id.toString()} />
+    ))
+  if (questionType === 'TEXT')
+    return <TextQuestion />
+  return <>Error</>
+}
+
 type validationResponse = {
-  canAccess: boolean
+  userTakenTest: number
 } | {
   redirect: string
 }
@@ -49,15 +68,19 @@ export default function QuestionForm(
   }
 ) {
   const questionPercentage = (question.order / lastQuestionOrder) * 100
-  const nextQuestionWithOrder = redirectToNextQuestion.bind(null, question.order)
+  const nextQuestionWithOrder = redirectToNextQuestion.bind(null, { order: question.order, id: question.id, type: question.type })
   const lastQuestionWithOrder = redirectToLastQuestion.bind(null, question.order)
-  const [_, nextQuestionAction, isPendingNext] = useActionState(nextQuestionWithOrder, null)
-  const [state, lastQuestionAction, isPendingLast] = useActionState(lastQuestionWithOrder, { message: null })
+  const [nextState, nextQuestionAction, isPendingNext] = useActionState(nextQuestionWithOrder, { message: null })
+  const [lastState, lastQuestionAction, isPendingLast] = useActionState(lastQuestionWithOrder, { message: null })
   const { data, error, isLoading } = useSWR('/api/user/test', fetcher)
 
   useEffect(() => {
-    if (state.message !== null) toast.error(state.message)
-  }, [state])
+    if (lastState.message !== null) toast.error(lastState.message)
+  }, [lastState])
+
+  useEffect(() => {
+    if (nextState.message !== null) toast.error(nextState.message)
+  }, [nextState])
 
   useEffect(() => {
     if (error) toast.error('Ocurrió un error')
@@ -79,12 +102,11 @@ export default function QuestionForm(
         <p className="font-normal text-smart-green text-base">{question.section.instructions}</p>
       </div>
       <form className="flex flex-col grow" action={nextQuestionAction}>
+        <input name='userTakenTest' type="hidden" value={data && 'userTakenTest' in data ? data.userTakenTest : undefined} />
         <div className="pl-3 grow">
           <h3 className="font-semibold text-2xl pb-2">{question.text}</h3>
           <div className="flex flex-col text-xl pl-4 gap-1">
-            {question.options.map(option => (
-              <OptionQuestion key={option.id} label={option.text} value={option.id.toString()} />
-            ))}
+            <RenderOptions questionType={question.type} options={question.options} />
           </div>
         </div>
         <div className="flex justify-between items-center">
