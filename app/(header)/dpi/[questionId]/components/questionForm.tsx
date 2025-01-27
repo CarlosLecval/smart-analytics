@@ -43,7 +43,7 @@ function RenderOptions({ questionType, options }: { questionType: QuestionType, 
 }
 
 type validationResponse = {
-  canAccess: boolean
+  userTakenTest: number
 } | {
   redirect: string
 }
@@ -68,15 +68,19 @@ export default function QuestionForm(
   }
 ) {
   const questionPercentage = (question.order / lastQuestionOrder) * 100
-  const nextQuestionWithOrder = redirectToNextQuestion.bind(null, question.order)
+  const nextQuestionWithOrder = redirectToNextQuestion.bind(null, { order: question.order, id: question.id, type: question.type })
   const lastQuestionWithOrder = redirectToLastQuestion.bind(null, question.order)
-  const [_, nextQuestionAction, isPendingNext] = useActionState(nextQuestionWithOrder, null)
-  const [state, lastQuestionAction, isPendingLast] = useActionState(lastQuestionWithOrder, { message: null })
+  const [nextState, nextQuestionAction, isPendingNext] = useActionState(nextQuestionWithOrder, { message: null })
+  const [lastState, lastQuestionAction, isPendingLast] = useActionState(lastQuestionWithOrder, { message: null })
   const { data, error, isLoading } = useSWR('/api/user/test', fetcher)
 
   useEffect(() => {
-    if (state.message !== null) toast.error(state.message)
-  }, [state])
+    if (lastState.message !== null) toast.error(lastState.message)
+  }, [lastState])
+
+  useEffect(() => {
+    if (nextState.message !== null) toast.error(nextState.message)
+  }, [nextState])
 
   useEffect(() => {
     if (error) toast.error('Ocurrió un error')
@@ -98,6 +102,7 @@ export default function QuestionForm(
         <p className="font-normal text-smart-green text-base">{question.section.instructions}</p>
       </div>
       <form className="flex flex-col grow" action={nextQuestionAction}>
+        <input name='userTakenTest' type="hidden" value={data && 'userTakenTest' in data ? data.userTakenTest : undefined} />
         <div className="pl-3 grow">
           <h3 className="font-semibold text-2xl pb-2">{question.text}</h3>
           <div className="flex flex-col text-xl pl-4 gap-1">

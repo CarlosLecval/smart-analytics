@@ -57,6 +57,7 @@ export function ScaleQuestion({ options }: { options: Option[] }) {
           </div>
         </SortableContext>
       </DndContext>
+      <input name="question" type="hidden" value={items.toString()} readOnly />
     </div>
   );
 

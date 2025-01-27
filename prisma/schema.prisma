@@ -146,7 +146,7 @@ model UserTakenTest {
 }
 
 model UserAnswer {
-  answer          String
+  answer          Json
   test            UserTakenTest @relation(fields: [userTakenTestId], references: [id])
   question        Question      @relation(fields: [questionId], references: [id])
   userTakenTestId Int
