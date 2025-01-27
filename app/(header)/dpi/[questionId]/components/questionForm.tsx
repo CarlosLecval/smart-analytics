@@ -52,14 +52,15 @@ const fetcher: Fetcher<validationResponse, string> = async (url: string) => {
 }
 
 export default function QuestionForm(
-  { question, lastQuestionOrder, prevQuestionId }: {
+  { question, lastQuestionOrder, prevQuestionId, nextquestionId }: {
     question: Question & { options: Option[], section: TestSection },
     lastQuestionOrder: number,
-    prevQuestionId: number | null
+    prevQuestionId: number | null,
+    nextquestionId: number | null
   }
 ) {
   const questionPercentage = (question.order / lastQuestionOrder) * 100
-  const nextQuestionWithOrder = redirectToNextQuestion.bind(null, { order: question.order, id: question.id, type: question.type })
+  const nextQuestionWithOrder = redirectToNextQuestion.bind(null, { order: question.order, id: question.id, type: question.type }, nextquestionId)
   const [nextState, nextQuestionAction, isPendingNext] = useActionState(nextQuestionWithOrder, { message: null })
   const { data, error, isLoading } = useSWR('/api/user/test', fetcher)
 

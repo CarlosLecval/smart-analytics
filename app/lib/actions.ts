@@ -125,6 +125,7 @@ export async function finishReading(testId: number, _prevState: { message: strin
 
 export async function redirectToNextQuestion(
   question: { order: number, id: number, type: QuestionType },
+  nextQuestionId: number | null,
   _prevState: { message: string | null },
   formData: FormData
 ): Promise<typeof _prevState> {
@@ -154,7 +155,7 @@ export async function redirectToNextQuestion(
     }
   }
   answer = answer as Prisma.JsonObject
-  const upsertAnswer = prisma.userAnswer.upsert({
+  await prisma.userAnswer.upsert({
     where: {
       userTakenTestId_questionId: {
         userTakenTestId: Number(userTakenTestId),
@@ -170,22 +171,8 @@ export async function redirectToNextQuestion(
       answer: answer
     }
   })
-  const getNext = prisma.question.findFirst({
-    where: {
-      order: {
-        gt: question.order
-      }
-    },
-    select: {
-      id: true
-    },
-    orderBy: {
-      order: 'asc'
-    }
-  })
-  const [_, next] = await Promise.all([upsertAnswer, getNext])
-  if (next !== null) {
-    return redirect(`/dpi/${next.id}`)
+  if (nextQuestionId !== null) {
+    return redirect(`/dpi/${nextQuestionId}`)
   }
   const getTotalQuestions = prisma.question.count({
     where: {

@@ -63,9 +63,28 @@ export default async function DpiServerComp({ params }: { params: Promise<{ ques
     }
   })
 
+  const nextQuestionId = await prisma.question.findFirst({
+    where: {
+      order: {
+        gt: question.order
+      }
+    },
+    select: {
+      id: true
+    },
+    orderBy: {
+      order: 'asc'
+    }
+  })
+
   return (
     <div className="flex flex-col w-4/6 gap-3 h-3/5">
-      <QuestionForm question={question} lastQuestionOrder={lastQuestionOrder.order} prevQuestionId={prevQuestionId === null ? null : prevQuestionId.id} />
+      <QuestionForm
+        question={question}
+        lastQuestionOrder={lastQuestionOrder.order}
+        prevQuestionId={prevQuestionId === null ? null : prevQuestionId.id}
+        nextquestionId={nextQuestionId === null ? null : nextQuestionId.id}
+      />
     </div>
   )
 }
