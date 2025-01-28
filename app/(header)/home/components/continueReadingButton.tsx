@@ -2,13 +2,8 @@
 
 import MainButton from "@/app/ui/components/mainButton"
 import Link from "next/link"
-import { useEffect } from "react"
 
-export default function ContinueReadingButton({ testId }: { testId: string }) {
-
-  useEffect(() => {
-    localStorage.setItem('testId', testId)
-  }, [testId])
+export default function ContinueReadingButton() {
 
   return (
     <Link href="/dpi/lectura">
