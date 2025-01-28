@@ -1,5 +1,6 @@
 import Google from "next-auth/providers/google"
 import type { NextAuthConfig } from "next-auth"
+import { Role } from "@prisma/client"
 
 export default {
   providers: [
@@ -7,7 +8,7 @@ export default {
       profile(profile) {
         console.log("profile", profile)
         return {
-          role: profile.role ?? "user",
+          role: "USER",
           name: profile.name,
           email: profile.email,
           image: profile.picture,
@@ -21,12 +22,11 @@ export default {
   },
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
-      console.log("auth", auth)
       const isLoggedIn = !!auth?.user;
 
       if (!isLoggedIn && nextUrl.pathname == '/') return true
 
-      if (isLoggedIn && nextUrl.pathname == '/') {
+      if (isLoggedIn && nextUrl.pathname == '/' && auth.user.role === 'USER') {
         return Response.redirect(`${nextUrl.origin}/home`);
       }
 
@@ -37,7 +37,7 @@ export default {
       return token
     },
     session({ session, token }) {
-      session.user.role = token.role as string
+      session.user.role = token.role as Role
       return session
     }
   }

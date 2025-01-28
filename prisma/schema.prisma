@@ -14,6 +14,11 @@ enum Sex {
   OTHER
 }
 
+enum Role {
+  USER
+  ADMIN
+}
+
 model Degree {
   id   Int    @id @default(autoincrement())
   name String
@@ -32,7 +37,7 @@ model User {
   email         String    @unique
   emailVerified DateTime?
   image         String?
-  role          String
+  role          Role
   sex           Sex?
   degree        Degree?   @relation(fields: [degreeId], references: [id])
   semester      Semester? @relation(fields: [semesterId], references: [id])
