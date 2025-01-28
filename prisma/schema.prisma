@@ -32,6 +32,7 @@ model User {
   email         String    @unique
   emailVerified DateTime?
   image         String?
+  role          String
   sex           Sex?
   degree        Degree?   @relation(fields: [degreeId], references: [id])
   semester      Semester? @relation(fields: [semesterId], references: [id])

@@ -60,7 +60,7 @@ async function main() {
   const dpiTest = await prisma.test.create({
     data: {
       name: "DPI",
-      TestSection: {
+      testSection: {
         create: dpiSections.map((section, ind) => ({
           ...section,
           order: ind + 1
