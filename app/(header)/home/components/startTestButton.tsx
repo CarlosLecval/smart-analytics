@@ -13,7 +13,6 @@ export default function StartTestButton({ email }: { email: string }) {
   useEffect(() => {
     if (state.message != null) toast.error(state.message)
     if (state.testId !== undefined) {
-      localStorage.setItem('testId', state.testId.toString())
       redirect("/dpi/lectura")
     }
   }, [state])

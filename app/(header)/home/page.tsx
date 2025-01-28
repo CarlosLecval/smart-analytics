@@ -20,9 +20,9 @@ export default async function Home() {
           ) : userTakenTest.endedAt !== null ? (
             <TestFinisedButton />
           ) : userTakenTest.startedAt !== null ? (
-            <ContinueTestButton testId={userTakenTest.id.toString()} email={session.user.email as string} />
+            <ContinueTestButton email={session.user.email as string} />
           ) : (
-            <ContinueReadingButton testId={userTakenTest.id.toString()} />
+            <ContinueReadingButton />
           )
         }
       </div>
