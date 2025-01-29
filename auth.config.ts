@@ -8,7 +8,7 @@ export default {
       profile(profile) {
         console.log("profile", profile)
         return {
-          role: "USER",
+          role: "ADMIN",
           name: profile.name,
           email: profile.email,
           image: profile.picture,
@@ -26,8 +26,26 @@ export default {
 
       if (!isLoggedIn && nextUrl.pathname == '/') return true
 
+      // Redirect user to home page if already logged in
       if (isLoggedIn && nextUrl.pathname == '/' && auth.user.role === 'USER') {
         return Response.redirect(`${nextUrl.origin}/home`);
+      }
+
+      const dashboardRegex = /\/dashboard\/?\S*/;
+
+      // if /dashboard/* redirect user to home if the user role is USER and is logged in
+      if (isLoggedIn && dashboardRegex.test(nextUrl.pathname) && auth.user.role === 'USER') {
+        return Response.redirect(`${nextUrl.origin}/home`);
+      }
+
+      // if not /dashboard/* redirect user to dashboard if the user role is ADMIN and is logged in
+      if (isLoggedIn && !dashboardRegex.test(nextUrl.pathname) && auth.user.role === 'ADMIN') {
+        return Response.redirect(`${nextUrl.origin}/dashboard/`);
+      }
+
+      // Redirect user to dashboard if the user role is ADMIN and is logged in
+      if (isLoggedIn && nextUrl.pathname == '/' && auth.user.role === 'ADMIN') {
+        return Response.redirect(`${nextUrl.origin}/dashboard`);
       }
 
       return isLoggedIn;
