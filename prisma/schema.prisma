@@ -31,6 +31,10 @@ model Semester {
   User   User[]
 }
 
+model Admin {
+  email String @id
+}
+
 model User {
   id            String    @id @default(cuid())
   name          String?

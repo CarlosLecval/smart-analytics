@@ -1,14 +1,19 @@
 import Google from "next-auth/providers/google"
 import type { NextAuthConfig } from "next-auth"
 import { Role } from "@prisma/client"
+import { prisma } from "./prisma"
 
 export default {
   providers: [
     Google({
-      profile(profile) {
-        console.log("profile", profile)
+      async profile(profile) {
+        const admin = await prisma.admin.findUnique({
+          where: {
+            email: profile.email
+          }
+        })
         return {
-          role: "ADMIN",
+          role: admin ? 'ADMIN' : 'USER',
           name: profile.name,
           email: profile.email,
           image: profile.picture,

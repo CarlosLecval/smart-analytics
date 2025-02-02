@@ -60,7 +60,7 @@ export default function Pagination({ totalPages }: { totalPages: number }) {
                 href={"/dashboard/admins"}
                 page={page}
                 position={position}
-                isActive={true}
+                isActive={false}
               />
             );
           })}
@@ -119,7 +119,7 @@ function PaginationArrow({
   const className = clsx(
     'flex h-10 w-10 items-center justify-center rounded-md border',
     {
-      'pointer-events-none text-gray-300': isDisabled,
+      'pointer-events-none': isDisabled,
       'hover:bg-gray-100': !isDisabled,
       'mr-2 md:mr-4': direction === 'left',
       'ml-2 md:ml-4': direction === 'right',
@@ -127,11 +127,15 @@ function PaginationArrow({
   );
 
   const icon =
-    direction === 'left' ? (
-      <Image src="/arrow-left-white.svg" alt="Arrow left icon" width={22} height={22} />
+    direction === 'left' && !isDisabled ? (
+      <Image src="/arrow-left-black.svg" alt="Arrow left icon" width={20} height={20} />
+    ) : direction === 'right' && !isDisabled ? (
+      <Image src="/arrow-right-black.svg" alt="Arrow right icon" width={20} height={20} />
+    ) : direction === 'left' && isDisabled ? (
+      <Image src="/arrow-left-gray.svg" alt="Arrow left icon" width={20} height={20} />
     ) : (
-      <Image src="/arrow-right.svg" alt="Arrow right icon" width={22} height={22} />
-    );
+      <Image src="/arrow-right-gray.svg" alt="Arrow right icon" width={20} height={20} />
+    )
 
   return isDisabled ? (
     <div className={className}>{icon}</div>
