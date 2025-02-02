@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import Image from "next/image";
 import Link from "next/link";
 
 const generatePagination = (currentPage: number, totalPages: number) => {
@@ -91,7 +92,7 @@ function PaginationNumber({
     {
       'rounded-l-md': position === 'first' || position === 'single',
       'rounded-r-md': position === 'last' || position === 'single',
-      'z-10 bg-blue-600 border-blue-600 text-white': isActive,
+      'z-10 bg-smart-green border-smart-green text-white': isActive,
       'hover:bg-gray-100': !isActive && position !== 'middle',
       'text-gray-300': position === 'middle',
     },
@@ -127,9 +128,9 @@ function PaginationArrow({
 
   const icon =
     direction === 'left' ? (
-      <span>{"<-"}</span>
+      <Image src="/arrow-left-white.svg" alt="Arrow left icon" width={22} height={22} />
     ) : (
-      <span>{"->"}</span>
+      <Image src="/arrow-right.svg" alt="Arrow right icon" width={22} height={22} />
     );
 
   return isDisabled ? (

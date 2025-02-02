@@ -84,7 +84,7 @@ function Table() {
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
-                      "Delete"
+                      Delete
                     </div>
                   </td>
                 </tr>
@@ -107,10 +107,10 @@ export default function Admins() {
         <Search placeholder="Search invoices..." />
         <Link
           href="/dashboard/admins/"
-          className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+          className="flex h-10 items-center rounded-lg bg-smart-green px-4 text-sm font-medium text-white transition-colors hover:bg-smart-green focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-smart-green"
         >
-          <span className="hidden md:block">Add admin</span>{' '}
-          <span>+</span>
+          <span className="hidden md:block pr-1">Add admin</span>
+          <Image src="/plus.svg" alt="plus icon" width={16} height={16} />
         </Link>
       </div>
       <Table />
