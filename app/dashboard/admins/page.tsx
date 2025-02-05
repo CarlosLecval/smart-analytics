@@ -14,10 +14,10 @@ export default function Admins() {
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
         <Search placeholder="Busca admins..." />
         <Link
-          href="/dashboard/admins/"
+          href="/dashboard/admins/add"
           className="flex h-10 items-center rounded-lg bg-smart-green px-4 text-sm font-medium text-white transition-colors hover:bg-smart-green focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-smart-green"
         >
-          <span className="hidden md:block pr-1">Agregar admin</span>
+          <span className="hidden md:block pr-1">Añadir admin</span>
           <Image src="/plus.svg" alt="plus icon" width={16} height={16} />
         </Link>
       </div>
