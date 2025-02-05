@@ -2,35 +2,8 @@
 
 import { redirect } from "next/navigation";
 import { prisma } from "@/prisma";
-import { userSchema } from "./schemas";
-import { signIn } from "@/auth";
 import { getUserTakenTest } from "@/app/lib/data";
 import { Prisma, QuestionType } from "@prisma/client";
-
-export async function updateUserInfo(email: string, prevState: { message: string | null }, formData: FormData): Promise<typeof prevState> {
-  const FormSchema = userSchema.pick({ sex: true, semester: true, degree: true })
-  const validatedFields = FormSchema.safeParse({
-    sex: formData.get('Sexo'),
-    degree: formData.get('Carrera'),
-    semester: formData.get('Semestre')
-  })
-  if (!validatedFields.success) return { message: "No se pudo actualizar la información del usuario" }
-  try {
-    await prisma.user.update({
-      where: { email: email },
-      data: {
-        sex: validatedFields.data.sex,
-        degreeId: validatedFields.data.degree,
-        semesterId: validatedFields.data.semester
-      }
-    })
-  }
-  catch (e) {
-    console.log(e)
-    return { message: "No se pudo actualizar la información del usuario" }
-  }
-  redirect("/home")
-}
 
 export async function startTest(email: string, _prevState: { message?: string | null, testId?: number }): Promise<typeof _prevState> {
   const userTakenTest = await getUserTakenTest(email);
@@ -199,8 +172,4 @@ export async function redirectToNextQuestion(
     }
   })
   redirect("/home")
-}
-
-export async function signInAction(redirectUrl: string | null) {
-  await signIn("google", { redirectTo: redirectUrl == null ? "/home" : redirectUrl })
 }

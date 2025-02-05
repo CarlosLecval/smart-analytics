@@ -1,6 +1,6 @@
 'use client';
 
-import { signInAction } from "@/app/lib/actions";
+import { signInAction } from "@/app/lib/actions/userActions";
 import Image from "next/image"
 import { useSearchParams } from "next/navigation";
 

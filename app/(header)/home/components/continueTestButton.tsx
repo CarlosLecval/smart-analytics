@@ -1,6 +1,6 @@
 'use client'
 
-import { continueTest } from "@/app/lib/actions"
+import { continueTest } from "@/app/lib/actions/testActions"
 import MainButton from "@/app/ui/components/mainButton"
 import { useActionState, useEffect } from "react"
 import toast from "react-hot-toast"

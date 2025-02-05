@@ -4,8 +4,28 @@ import { sourceSerif } from "@/app/ui/fonts";
 import Image from "next/image";
 import Link from "next/link";
 import AdminsTable from "./components/adminsTable";
+import { prisma } from "@/prisma";
+import { Suspense } from "react";
+import TableSkeleton from "@/app/ui/components/tableSkeleton";
 
-export default function Admins() {
+export default async function Admins(props: {
+  searchParams?: Promise<{
+    query?: string;
+    page?: string;
+  }>;
+}) {
+  const searchParams = await props.searchParams;
+  const query = searchParams?.query || '';
+  const currentPage = Number(searchParams?.page) || 1;
+  const count = await prisma.admin.count({
+    where: {
+      email: {
+        contains: query,
+      },
+    },
+  });
+  const totalPages = Math.ceil(count / 10);
+
   return (
     <div className="w-full">
       <div className="flex w-full items-center justify-between">
@@ -21,9 +41,11 @@ export default function Admins() {
           <Image src="/plus.svg" alt="plus icon" width={16} height={16} />
         </Link>
       </div>
-      <AdminsTable />
+      <Suspense key={query + currentPage} fallback={<TableSkeleton />}>
+        <AdminsTable query={query} currentPage={currentPage} />
+      </Suspense>
       <div className="mt-5 flex w-full justify-center">
-        <Pagination totalPages={10} />
+        <Pagination totalPages={totalPages} />
       </div>
     </div>
   );

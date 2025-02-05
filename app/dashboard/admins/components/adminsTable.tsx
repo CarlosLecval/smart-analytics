@@ -1,8 +1,24 @@
 import { prisma } from "@/prisma";
-import Image from "next/image";
+import DeleteAdminButton from "./deleteAdminButton";
+import { auth } from "@/auth";
 
-export default async function AdminsTable() {
-  const admins = await prisma.admin.findMany();
+export default async function AdminsTable({ query, currentPage }: {
+  query: string;
+  currentPage: number;
+}) {
+  const session = await auth();
+  if (!session?.user) return <>No user found</>;
+
+  const admins = await prisma.admin.findMany({
+    where: {
+      email: {
+        contains: query
+      }
+    },
+    skip: (currentPage - 1) * 10,
+    take: 10
+  });
+
   return (
     <div className="mt-6 flow-root">
       <div className="inline-block min-w-full align-middle">
@@ -29,12 +45,11 @@ export default async function AdminsTable() {
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
-                      <form>
-                        <button type="submit" className="rounded-md border p-2 hover:bg-gray-100">
-                          <span className="sr-only">Delete</span>
-                          <Image src="/trash.svg" alt="Arrow left icon" width={20} height={20} />
-                        </button>
-                      </form>
+                      {admin.email !== session.user.email ? (
+                        <DeleteAdminButton email={admin.email} />
+                      ) : (
+                        <span className="bg-light-green text-smart-green py-1 px-2 rounded-full">Actual</span>
+                      )}
                     </div>
                   </td>
                 </tr>

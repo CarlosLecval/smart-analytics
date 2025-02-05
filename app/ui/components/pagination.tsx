@@ -1,6 +1,9 @@
+"use client"
+
 import clsx from "clsx";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname, useSearchParams } from "next/navigation";
 
 const generatePagination = (currentPage: number, totalPages: number) => {
   // If the total number of pages is 7 or less,
@@ -36,14 +39,24 @@ const generatePagination = (currentPage: number, totalPages: number) => {
 };
 
 export default function Pagination({ totalPages }: { totalPages: number }) {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const currentPage = Number(searchParams.get('page')) || 1;
+
+  const createPageURL = (pageNumber: number | string) => {
+    const params = new URLSearchParams(searchParams);
+    params.set('page', pageNumber.toString());
+    return `${pathname}?${params.toString()}`;
+  };
+
   const allPages = generatePagination(1, totalPages);
   return (
     <>
       <div className="inline-flex">
         <PaginationArrow
           direction="left"
-          href={"/dashboard/admins"}
-          isDisabled={false}
+          href={createPageURL(currentPage - 1)}
+          isDisabled={currentPage <= 1}
         />
         <div className="flex -space-x-px">
           {allPages.map((page, index) => {
@@ -57,10 +70,10 @@ export default function Pagination({ totalPages }: { totalPages: number }) {
             return (
               <PaginationNumber
                 key={page}
-                href={"/dashboard/admins"}
+                href={createPageURL(page)}
                 page={page}
                 position={position}
-                isActive={false}
+                isActive={currentPage === page}
               />
             );
           })}
@@ -68,8 +81,8 @@ export default function Pagination({ totalPages }: { totalPages: number }) {
 
         <PaginationArrow
           direction="right"
-          href={"/dashboard/admins"}
-          isDisabled={true}
+          href={createPageURL(currentPage + 1)}
+          isDisabled={currentPage >= totalPages}
         />
       </div>
     </>

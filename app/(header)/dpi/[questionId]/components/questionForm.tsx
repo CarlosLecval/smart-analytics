@@ -4,7 +4,7 @@ import MainButton from "@/app/ui/components/mainButton";
 import { Option, Question, QuestionType, TestSection } from "@prisma/client";
 import Image from "next/image";
 import { OptionQuestion } from "./optionQuestion";
-import { redirectToNextQuestion } from "@/app/lib/actions";
+import { redirectToNextQuestion } from "@/app/lib/actions/testActions";
 import { useActionState, useEffect } from "react";
 import toast from "react-hot-toast";
 import useSWR, { Fetcher } from "swr";
