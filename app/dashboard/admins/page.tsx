@@ -41,12 +41,12 @@ export default async function Admins(props: {
           <Image src="/plus.svg" alt="plus icon" width={16} height={16} />
         </Link>
       </div>
-      <Suspense key={query + currentPage} fallback={<TableSkeleton />}>
+      <Suspense key={query + currentPage} fallback={<TableSkeleton headers={["Correo"]} />}>
         <AdminsTable query={query} currentPage={currentPage} />
       </Suspense>
       <div className="mt-5 flex w-full justify-center">
         <Pagination totalPages={totalPages} />
       </div>
-    </div>
+    </div >
   );
 }
