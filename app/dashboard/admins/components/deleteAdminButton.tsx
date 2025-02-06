@@ -1,8 +1,7 @@
 "use client"
 
 import { removeAdmin } from "@/app/lib/actions/userActions";
-import clsx from "clsx";
-import Image from "next/image";
+import DeleteButton from "@/app/ui/components/deleteButton";
 import { useActionState, useEffect } from "react";
 import toast from "react-hot-toast";
 
@@ -16,15 +15,6 @@ export default function DeleteAdminButton({ email }: { email: string }) {
   }, [state])
 
   return (
-    <form action={formAction}>
-      <button
-        type="submit"
-        className={clsx("rounded-md border p-2 hover:bg-gray-100", { "animate-pulse": isPending })}
-        disabled={isPending}
-      >
-        <span className="sr-only">Delete</span>
-        <Image src="/trash.svg" alt="Arrow left icon" width={20} height={20} />
-      </button>
-    </form >
+    <DeleteButton formAction={formAction} isPending={isPending} />
   )
 }
