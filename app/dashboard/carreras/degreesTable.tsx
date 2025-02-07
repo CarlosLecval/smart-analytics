@@ -28,8 +28,8 @@ export default async function DegreesTable({ query, currentPage }: {
           </TableCell>
           <TableCell>
             <div className="flex justify-end gap-3">
-              <EditDegreeButton id={degree.id.toString()} />
-              <DeleteDegreeButton />
+              <EditDegreeButton id={degree.id} />
+              <DeleteDegreeButton id={degree.id} />
             </div>
           </TableCell>
         </TableRow>

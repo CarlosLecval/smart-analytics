@@ -1,12 +1,19 @@
+"use client"
+
+import { updateDegree } from "@/app/lib/actions/degreeActions";
 import FormContainer from "@/app/ui/components/form/formContainer";
 import TextInput from "@/app/ui/components/form/textInput";
 import { Degree } from "@prisma/client";
+import { useActionState } from "react";
 
 export default function EditDegreeForm({ degree }: { degree: Degree }) {
+  const updateDegreeWithId = updateDegree.bind(null, degree.id)
+  const [state, formAction, isPending] = useActionState(updateDegreeWithId, {})
+
   return (
     <FormContainer
-      formAction={async () => { "use server" }}
-      isPending={false}
+      formAction={formAction}
+      isPending={isPending}
       text={"Editar"}
       cancelHref={"/dashboard/carreras"}
     >
@@ -15,7 +22,7 @@ export default function EditDegreeForm({ degree }: { degree: Degree }) {
         placeholder="Ing. en Inteligencia de Datos"
         icon={{ src: "/university-black.svg", alt: "Degree field icon" }}
         label={"Carrera"}
-        errorMessage={""}
+        errorMessage={state.fieldMessage}
       />
     </FormContainer>
   )
