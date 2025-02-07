@@ -15,11 +15,11 @@ export default function AddForm() {
       cancelHref={"/dashboard/admins"}
     >
       <TextInput
-        defaultValue={state.email ?? ""}
+        defaultValue={state.email}
         placeholder="correo@up.edu.mx"
         icon={{ src: "/envelope.svg", alt: "Envelope icon" }}
         label={"Correo"}
-        errorMessage={""}
+        errorMessage={state.fieldMessage}
       />
     </FormContainer>
   )

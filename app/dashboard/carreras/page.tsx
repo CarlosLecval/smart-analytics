@@ -17,9 +17,9 @@ export default async function Degrees(props: {
   const searchParams = await props.searchParams;
   const query = searchParams?.query || '';
   const currentPage = Number(searchParams?.page) || 1;
-  const count = await prisma.admin.count({
+  const count = await prisma.degree.count({
     where: {
-      email: {
+      name: {
         contains: query,
       },
     },

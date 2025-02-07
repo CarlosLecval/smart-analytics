@@ -1,11 +1,11 @@
 import Image from "next/image";
 
 export default function TextInput({ defaultValue, label, errorMessage, icon, placeholder }: {
-  defaultValue: string,
+  defaultValue: string | undefined,
   placeholder: string,
   label: string,
   icon: { src: string, alt: string },
-  errorMessage: string
+  errorMessage: string | undefined
 }) {
   const idLabel = label.replace(" ", "-").toLowerCase()
   return (
