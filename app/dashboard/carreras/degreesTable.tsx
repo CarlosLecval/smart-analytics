@@ -1,6 +1,7 @@
 import Table, { TableCell, TableRow } from "@/app/ui/components/table";
 import { prisma } from "@/prisma";
 import DeleteDegreeButton from "./components/deleteDegreeButton";
+import EditDegreeButton from "./components/editDegreeButton";
 
 export default async function DegreesTable({ query, currentPage }: {
   query: string;
@@ -27,6 +28,7 @@ export default async function DegreesTable({ query, currentPage }: {
           </TableCell>
           <TableCell>
             <div className="flex justify-end gap-3">
+              <EditDegreeButton id={degree.id.toString()} />
               <DeleteDegreeButton />
             </div>
           </TableCell>

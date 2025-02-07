@@ -36,7 +36,7 @@ export async function addAdmin(
   prevState: { email?: string, fieldMessage?: string, message?: string },
   formData: FormData
 ): Promise<typeof prevState> {
-  const formEmail = formData.get("email")
+  const formEmail = formData.get("correo")
   if (formEmail === null || formEmail === "") return { fieldMessage: "El correo está vacío" }
   const email = z
     .string()

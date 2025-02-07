@@ -10,7 +10,7 @@ export default function DeleteButton({ formAction, isPending }: { formAction: ()
         disabled={isPending}
       >
         <span className="sr-only">Delete</span>
-        <Image src="/trash.svg" alt="Arrow left icon" width={20} height={20} />
+        <Image src="/trash.svg" alt="Trash icon" width={20} height={20} />
       </button>
     </form >
   )

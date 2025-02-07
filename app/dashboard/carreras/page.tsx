@@ -34,7 +34,7 @@ export default async function Degrees(props: {
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
         <Search placeholder="Busca carreras..." />
         <Link
-          href="/dashboard/admins/add"
+          href="/dashboard/carreras/add"
           className="flex h-10 items-center rounded-lg bg-smart-green px-4 text-sm font-medium text-white transition-colors hover:bg-smart-green focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-smart-green"
         >
           <span className="hidden md:block pr-1">Añadir carrera</span>
