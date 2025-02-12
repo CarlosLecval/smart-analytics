@@ -128,7 +128,7 @@ export async function redirectToNextQuestion(
     }
   }
   answer = answer as Prisma.JsonObject
-  await prisma.userAnswer.upsert({
+  prisma.userAnswer.upsert({
     where: {
       userTakenTestId_questionId: {
         userTakenTestId: Number(userTakenTestId),
@@ -144,6 +144,7 @@ export async function redirectToNextQuestion(
       answer: answer
     }
   })
+    .finally()
   if (nextQuestionId !== null) {
     return redirect(`/dpi/${nextQuestionId}`)
   }
