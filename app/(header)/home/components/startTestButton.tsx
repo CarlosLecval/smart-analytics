@@ -1,7 +1,7 @@
 'use client'
 
 import MainButton from "@/app/ui/components/mainButton";
-import { startTest } from "@/app/lib/actions";
+import { startTest } from "@/app/lib/actions/testActions";
 import { redirect } from "next/navigation";
 import { useActionState, useEffect } from "react";
 import toast from "react-hot-toast";

@@ -1,6 +1,6 @@
 "use client"
 
-import { finishReading } from "@/app/lib/actions";
+import { finishReading } from "@/app/lib/actions/testActions";
 import Loader from "@/app/ui/components/loader";
 import MainButton from "@/app/ui/components/mainButton";
 import { redirect } from "next/navigation";

@@ -2,11 +2,11 @@
 
 import { useActionState, useEffect } from "react"
 import MainButton from "@/app/ui/components/mainButton"
-import { updateUserInfo } from "@/app/lib/actions"
 import { z } from "zod"
 import { userSchema } from "@/app/lib/schemas"
 import toast from "react-hot-toast"
 import Loader from "@/app/ui/components/loader"
+import { updateUserInfo } from "@/app/lib/actions/userActions"
 
 interface option {
   value: string | number,
