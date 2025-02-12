@@ -21,7 +21,7 @@ export default async function DegreesTable({ query, currentPage }: {
     <Table headers={["Carrera"]}>
       {degrees?.map((degree, index) => (
         <TableRow
-          key={`admin-${index}`}
+          key={`degree-${index}`}
         >
           <TableCell>
             {degree.name}

@@ -18,6 +18,11 @@ const links = [
     href: '/dashboard/admins',
     icon: "users-alt",
   },
+  {
+    name: 'Alumnos',
+    href: '/dashboard/alumnos',
+    icon: "book-reader",
+  },
 ];
 
 function NavLink({ link, pathname }: { link: typeof links[0], pathname: string }) {

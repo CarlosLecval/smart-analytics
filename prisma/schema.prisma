@@ -52,7 +52,7 @@ model User {
   updatedAt  DateTime        @updatedAt
   degreeId   Int?
   semesterId Int?
-  UserTest   UserTakenTest[]
+  userTest   UserTakenTest[]
 }
 
 model Account {

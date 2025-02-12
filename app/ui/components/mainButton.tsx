@@ -12,7 +12,7 @@ export default function MainButton({
     <div
       className={
         clsx(
-          ` flex items-center text-white bg-smart-green p-2 rounded-lg text-${size} ${className}`,
+          ` flex items-center justify-center text-white bg-smart-green p-2 rounded-lg text-${size} ${className}`,
           {
             "animate-pulse": isLoading
           }
