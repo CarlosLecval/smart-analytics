@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   DndContext,
   closestCenter,
@@ -29,10 +29,6 @@ export function ScaleQuestion({ options }: { options: Option[] }) {
       coordinateGetter: sortableKeyboardCoordinates,
     })
   );
-
-  useEffect(() => {
-    console.log(items)
-  }, [items])
 
   return (
     <div className="pb-1">

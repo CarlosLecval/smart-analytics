@@ -3,7 +3,6 @@ import Search from "@/app/ui/components/search";
 import TableSkeleton from "@/app/ui/components/tableSkeleton";
 import { sourceSerif } from "@/app/ui/fonts";
 import { prisma } from "@/prisma";
-import Link from "next/link";
 import { Suspense } from "react";
 import AlumnosTable from "./alumnosTable";
 
