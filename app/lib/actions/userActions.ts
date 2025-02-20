@@ -26,7 +26,7 @@ export async function updateUserInfo(email: string, prevState: { message: string
     })
   }
   catch (e) {
-    console.log(e)
+    console.log((e as Error).stack)
     return { message: "No se pudo actualizar la información del usuario" }
   }
   revalidatePath("/dashboard/alumnos")
@@ -64,6 +64,19 @@ export async function removeAdmin(
     }
   })
   revalidatePath('/dashboard/admins');
+  return { success: true }
+}
+
+export async function deleteUser(
+  id: string,
+  _prevState: { success: boolean | null, message?: string },
+): Promise<typeof _prevState> {
+  await prisma.user.delete({
+    where: {
+      id: id
+    }
+  })
+  revalidatePath('/dashboard/alumnos');
   return { success: true }
 }
 
