@@ -58,7 +58,7 @@ export default async function AlumnosTable({ query, currentPage }: {
               <DeleteStudentButton id={alumno.id} />
               {
                 alumno.userTest[0]?.endedAt !== null && alumno.userTest[0]?.endedAt !== undefined &&
-                <ResultLink />
+                <ResultLink userTakenTestId={alumno.userTest[0]?.id} />
               }
             </div>
           </TableCell>
@@ -69,10 +69,10 @@ export default async function AlumnosTable({ query, currentPage }: {
   );
 }
 
-function ResultLink() {
+function ResultLink({ userTakenTestId }: { userTakenTestId: number }) {
   return (
     <Link
-      href={"/dashboard"}
+      href={`/dashboard/alumnos/test/${userTakenTestId}`}
       className="rounded-md border p-2 hover:bg-gray-100"
     >
       <span className="sr-only">View results</span>
