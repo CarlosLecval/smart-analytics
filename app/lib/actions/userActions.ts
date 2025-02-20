@@ -67,6 +67,19 @@ export async function removeAdmin(
   return { success: true }
 }
 
+export async function deleteUser(
+  id: string,
+  _prevState: { success: boolean | null, message?: string },
+): Promise<typeof _prevState> {
+  await prisma.user.delete({
+    where: {
+      id: id
+    }
+  })
+  revalidatePath('/dashboard/alumnos');
+  return { success: true }
+}
+
 export async function signInAction(redirectUrl: string | null) {
   await signIn("google", { redirectTo: redirectUrl == null ? "/home" : redirectUrl })
 }
