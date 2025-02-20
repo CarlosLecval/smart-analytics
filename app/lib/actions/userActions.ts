@@ -26,7 +26,7 @@ export async function updateUserInfo(email: string, prevState: { message: string
     })
   }
   catch (e) {
-    console.log(e.stack)
+    console.log((e as Error).stack)
     return { message: "No se pudo actualizar la información del usuario" }
   }
   revalidatePath("/dashboard/alumnos")
