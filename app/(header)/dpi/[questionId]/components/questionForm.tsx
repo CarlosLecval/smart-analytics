@@ -3,16 +3,16 @@
 import MainButton from "@/app/ui/components/mainButton";
 import { Option, Question, QuestionType, TestSection } from "@prisma/client";
 import Image from "next/image";
-import { OptionQuestion } from "./optionQuestion";
+import { OptionQuestion } from "@/app/ui/components/questionTypes/optionQuestion";
 import { redirectToNextQuestion } from "@/app/lib/actions/testActions";
 import { useActionState, useEffect } from "react";
 import toast from "react-hot-toast";
 import useSWR, { Fetcher } from "swr";
 import { redirect } from "next/navigation";
 import QuestionLoading from "../loading";
-import { ScaleQuestion } from "./scaleQuestion";
-import { SelectionQuestion } from "./selectionQuestion";
-import TextQuestion from "./textQuestion";
+import { ScaleQuestion } from "@/app/ui/components/questionTypes/scaleQuestion";
+import { SelectionQuestion } from "@/app/ui/components/questionTypes/selectionQuestion";
+import TextQuestion from "@/app/ui/components/questionTypes/textQuestion";
 import Link from "next/link";
 import clsx from "clsx";
 
